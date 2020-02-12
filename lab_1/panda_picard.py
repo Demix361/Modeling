@@ -115,10 +115,10 @@ def calc(ns, a, b, h, alpha, func):
 
 
 if __name__ == "__main__":
-    x1 = int(input("Введите X: от "))
-    x2 = int(input(" " * 11 + "до "))
-    h = float(input(" " * 6 + "с шагом "))
-    nl = input("Введите через пробел интересующие итерации для метода  Пикара: ").split(" ")
-    a = float(input("Введите α для метода Рунге-Кутты второго порядка: "))
-    nl = list(map(lambda x: int(x), nl))
+    x1 = 0 #int(input("Введите X: от "))
+    x2 = 2 #int(input(" " * 11 + "до "))
+    h = 0.12 #float(input(" " * 6 + "с шагом "))
+    nl = [3, 4, 5]# input("Введите через пробел интересующие итерации для метода  Пикара: ").split(" ")
+    a = 2#float(input("Введите α для метода Рунге-Кутты второго порядка: "))
+    #nl = list(map(lambda x: int(x), nl))
     calc(nl, x1, x2, h, a, test_func)

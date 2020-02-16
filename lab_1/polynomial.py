@@ -1,15 +1,16 @@
+from decimal import Decimal
 
 
 # Класс члена полинома, обладает степенью и знаменателем
 class PolMember:
     def __init__(self, power, denominator):
-        self.power = power
-        self.denominator = denominator
+        self.power = Decimal(power)
+        self.denominator = Decimal(denominator)
 
 
 # Решить полином
 def solve_pol(pol, x):
-    y = 0
+    y = Decimal(0)
 
     for p in pol:
         y += pow(x, p.power) / p.denominator
@@ -45,7 +46,7 @@ def print_pol(pol):
     for i in range(len(pol)):
         print('(x ^ %s) / %s' % (pol[i].power, pol[i].denominator), end='')
         if i != len(pol) - 1:
-            print(' + ', end ='')
+            print(' + ', end='')
         else:
             print()
 

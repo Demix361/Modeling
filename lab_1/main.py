@@ -1,4 +1,4 @@
-from decimal import Decimal, Overflow
+from decimal import Decimal, Overflow, ROUND_DOWN
 from polynomial import find_picar_pols, solve_pol, print_pol
 from prettytable import PrettyTable
 
@@ -112,8 +112,10 @@ def prettytable_output(table, header):
     new_table = PrettyTable()
     new_table.field_names = header
 
-    for row in table:
-        new_table.add_row(row)
+    for i in range(len(table)):
+        for j in range(len(table[0])):
+            table[i][j] = round(float(table[i][j]), 7)
+        new_table.add_row(table[i])
 
     return new_table
 
@@ -121,9 +123,9 @@ def prettytable_output(table, header):
 def main():
     # beg = float(input('Введите начальное значение X: '))
     beg = 0  # ???
-    end = 2.5  # float(input('Введите конечное значение X: '))
-    step = 0.001  # float(input('Введите шаг: '))
-    picar_iters = [4, 5, 9]  # list(map(int, input("Введите через пробел интересующие итерации для метода Пикара: ").split(" ")))
+    end = 1  # float(input('Введите конечное значение X: '))
+    step = 0.01  # float(input('Введите шаг: '))
+    picar_iters = [3, 4]  # list(map(int, input("Введите через пробел интересующие итерации для метода Пикара: ").split(" ")))
 
     table, header, pols = calculate(beg, end, step, picar_iters)
     p_table = prettytable_output(table, header)

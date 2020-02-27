@@ -17,7 +17,7 @@ def numerical_explicit_table(beg, end, step):
     table = [(x, Decimal(0))]
 
     while x + step <= end:
-        if table[-1][1] is not 'переполнение':
+        if table[-1][1] != 'переполнение':
             y = numerical_explicit(x, table[-1][1], step)
         else:
             y = None
@@ -54,7 +54,7 @@ def numerical_implicit_table(beg, end, step):
 
 # Численный метод - неявная схема
 def numerical_implicit(x, y_old, h):
-    if y_old is not 'D < 0':
+    if y_old != 'D < 0':
         d = 1 - 4 * h * (y_old + h * (h + x) ** 2)
         if d < 0:
             return 'D < 0'
@@ -86,7 +86,6 @@ def picar_table(beg, end, step, iterations):
 
 def picar_table_mp_v3(beg, end, step, iterations, p_amount):
     x = beg
-    table = []
     procs = []
     x_q = Queue()
     pols = find_picar_pols(max(iterations))
@@ -97,24 +96,40 @@ def picar_table_mp_v3(beg, end, step, iterations, p_amount):
         x += step
 
     for i in range(p_amount):
-        proc = Process(target=picar_proc_v3, args=(x_q, pols, iterations, i, p_amount, y_qs))
+        proc = Process(target=picar_proc_v3, args=(x_q, pols, iterations, y_qs))
         procs.append(proc)
         proc.start()
 
     for proc in procs:
         proc.join()
 
+    x_q.close()
+
+    table = []
+    y_arr = [[] for i in range(len(iterations))]
+
     for i in range(len(iterations)):
-        
+        while not y_qs[i].empty():
+            y_arr[i].append(y_qs[i].get())
 
-    print('here')
+    for i in range(len(iterations)):
+        y_arr[i].sort()
 
+    for q in y_qs:
+        q.close()
+
+    j = 0
+    while x <= end:
+        table.append([x])
+        for i in range(len(iterations)):
+            table[-1].append(y_arr[i][j])
+        x += step
+        j += 1
 
     return table, pols
 
 
 def picar_proc_v3(x_q, pols, iterations, y_qs):
-    res = []
     n = len(iterations)
 
     while not x_q.empty():
@@ -122,14 +137,7 @@ def picar_proc_v3(x_q, pols, iterations, y_qs):
 
         for i in range(n):
             y_qs[i].put(solve_pol(pols[iterations[i] - 1], x))
-
-
-
-
-
 # ==========================================
-
-
 
 
 

@@ -1,4 +1,5 @@
 from decimal import Decimal
+from multiprocessing import Process, Queue
 
 
 # Класс члена полинома, обладает степенью и знаменателем
@@ -6,6 +7,39 @@ class PolMember:
     def __init__(self, power, denominator):
         self.power = Decimal(power)
         self.denominator = Decimal(denominator)
+
+
+# not working
+def solve_pol_mp(pol, x, p_amount):
+    q = Queue()
+    procs = []
+
+    for i in range(p_amount):
+        proc = Process(target=solve_proc, args=(pol, x, q, i, p_amount))
+        procs.append(proc)
+        proc.start()
+
+    for proc in procs:
+        proc.join()
+
+    y = Decimal(0)
+    while not q.empty():
+        y += q.get()
+
+    q.close()
+
+    return y
+
+
+def solve_proc(pol, x, q, proc_num, proc_amount):
+    res = Decimal(0)
+
+    for i in range(proc_num, len(pol), proc_amount):
+        res += pow(x, pol[i].power) / pol[i].denominator
+
+    q.put(res)
+#------
+
 
 
 # Решить полином

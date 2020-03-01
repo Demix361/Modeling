@@ -20,7 +20,7 @@ def numerical_explicit_table(beg, end, step):
         if table[-1][1] != 'переполнение':
             y = numerical_explicit(x, table[-1][1], step)
         else:
-            y = None
+            y = 'переполнение'
 
         x += step
 
@@ -83,7 +83,6 @@ def picar_table(beg, end, step, iterations):
 
 
 # ========================================== many queues
-
 def picar_table_mp_v3(beg, end, step, iterations, p_amount):
     x = beg
     procs = []
@@ -138,9 +137,6 @@ def picar_proc_v3(x_q, pols, iterations, y_qs):
         for i in range(n):
             y_qs[i].put(solve_pol(pols[iterations[i] - 1], x))
 # ==========================================
-
-
-
 # ================================================= Pool - memory error
 def picar_table_mp_v2(beg, end, step, iterations):
     x = beg
@@ -167,9 +163,6 @@ def picar_proc_v2(x, pols, iterations):
 
     return res
 # =================================================
-
-
-
 #======================================================== default mp - not working why???
 def picar_table_mp(beg, end, step, iterations, p_amount):
     x = beg
@@ -218,7 +211,6 @@ def picar_proc(x_arr, pols, iterations, p_num, p_amount, q):
 #========================================================
 
 
-
 def calculate(beg, end, step, picar_iters):
     beg = Decimal(beg)
     end = Decimal(end)
@@ -230,17 +222,9 @@ def calculate(beg, end, step, picar_iters):
         header.append(str(i) + ' приближение Пикара')
     header += ['Явная схема', 'Неявная схема']
 
-    #t_1 = time()
     num_ex_res = numerical_explicit_table(beg, end, step)
-    #print(time() - t_1)
-
-    #t_1 = time()
     num_im_res = numerical_implicit_table(beg, end, step)
-    #print(time() - t_1)
-
-    t_1 = time()
-    picar_res, pols = picar_table_mp_v3(beg, end, step, picar_iters, 8)
-    print('picar: ', time() - t_1)
+    picar_res, pols = picar_table(beg, end, step, picar_iters)
 
     size = len(num_ex_res)
     for i in range(size):
@@ -271,9 +255,9 @@ def prettytable_output(table, header):
 
 def main():
     beg = 0
-    end = 2  # float(input('Введите конечное значение X: '))
-    step = 0.0001  # float(input('Введите шаг: '))
-    picar_iters = [3]  # list(map(int, input("Введите через пробел интересующие итерации для метода Пикара: ").split(" ")))
+    end = 2.1  # float(input('Введите конечное значение X: '))
+    step = 0.01  # float(input('Введите шаг: '))
+    picar_iters = [3, 4]  # list(map(int, input("Введите через пробел интересующие итерации для метода Пикара: ").split(" ")))
 
     t = time()
 
